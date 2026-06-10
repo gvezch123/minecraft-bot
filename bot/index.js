@@ -1,6 +1,8 @@
 const mineflayer = require('mineflayer')
 const { pathfinder } = require('mineflayer-pathfinder')
 const config = require('../config/botConfig')
+const fs = require('fs')
+const path = require('path')
 
 let bot
 
@@ -21,6 +23,28 @@ function createBot() {
 
   bot.once('spawn', () => {
     console.log('Bot spawned')
+    
+    // Устанавливаем скин боту
+    try {
+      const skinPath = path.join(__dirname, '../bot-skin.png')
+      if (fs.existsSync(skinPath)) {
+        const skinData = fs.readFileSync(skinPath)
+        bot.setSettings({
+          skinParts: {
+            cape: true,
+            jacket: true,
+            left_sleeve: true,
+            right_sleeve: true,
+            left_pants: true,
+            right_pants: true,
+            hat: true
+          }
+        })
+        console.log('Bot skin loaded!')
+      }
+    } catch (err) {
+      console.log('Skin file not found or error loading skin:', err)
+    }
   })
 
   // Auto-reconnect на разрыв соединения
