@@ -74,6 +74,39 @@ button{
 .mouse{
     margin-top:20px;
 }
+
+.arrow-controls{
+    margin-top:20px;
+    display:inline-block;
+}
+
+.arrow-row{
+    margin:5px;
+}
+
+.arrow-btn{
+    width:60px;
+    height:60px;
+    margin:2px;
+    font-size:24px;
+    font-weight:bold;
+    background:#444;
+    color:white;
+    border:2px solid #666;
+    border-radius:5px;
+    cursor:pointer;
+    transition:0.1s;
+}
+
+.arrow-btn:active{
+    background:#666;
+    transform:scale(0.95);
+}
+
+.arrow-btn:hover{
+    background:#555;
+}
+
 </style>
 
 </head>
@@ -122,6 +155,30 @@ button{
         onmouseup="release('sneak')">SHIFT</button>
 </div>
 
+</div>
+
+<div class="arrow-controls">
+    <h3>Поворот головы</h3>
+    
+    <div class="arrow-row">
+        <button class="arrow-btn"
+            onmousedown="lookUp()"
+            onmouseup="lookStop()">⬆️</button>
+    </div>
+    
+    <div class="arrow-row">
+        <button class="arrow-btn"
+            onmousedown="lookLeft()"
+            onmouseup="lookStop()">⬅️</button>
+        
+        <button class="arrow-btn"
+            onmousedown="lookDown()"
+            onmouseup="lookStop()">⬇️</button>
+        
+        <button class="arrow-btn"
+            onmousedown="lookRight()"
+            onmouseup="lookStop()">➡️</button>
+    </div>
 </div>
 
 <div class="mouse">
@@ -217,6 +274,66 @@ async function mouseRelease(button){
     })
 }
 
+async function lookUp(){
+    await fetch('/bot/look',{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+            direction: 'up'
+        })
+    })
+}
+
+async function lookDown(){
+    await fetch('/bot/look',{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+            direction: 'down'
+        })
+    })
+}
+
+async function lookLeft(){
+    await fetch('/bot/look',{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+            direction: 'left'
+        })
+    })
+}
+
+async function lookRight(){
+    await fetch('/bot/look',{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+            direction: 'right'
+        })
+    })
+}
+
+async function lookStop(){
+    await fetch('/bot/look',{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+            direction: 'stop'
+        })
+    })
+}
+
 document.addEventListener('keydown',(e)=>{
     if(e.repeat) return
 
@@ -239,6 +356,22 @@ document.addEventListener('keydown',(e)=>{
             break
         case 'shift':
             press('sneak')
+            break
+        case 'arrowup':
+            e.preventDefault()
+            lookUp()
+            break
+        case 'arrowdown':
+            e.preventDefault()
+            lookDown()
+            break
+        case 'arrowleft':
+            e.preventDefault()
+            lookLeft()
+            break
+        case 'arrowright':
+            e.preventDefault()
+            lookRight()
             break
     }
 })
@@ -263,6 +396,13 @@ document.addEventListener('keyup',(e)=>{
             break
         case 'shift':
             release('sneak')
+            break
+        case 'arrowup':
+        case 'arrowdown':
+        case 'arrowleft':
+        case 'arrowright':
+            e.preventDefault()
+            lookStop()
             break
     }
 })
